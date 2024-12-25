@@ -5,17 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/picocss@1.6.5/dist/pico.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h2>Register</h2>
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <button type="submit">Register</button>
-    </form>
+    <main class="container">
+        <h2>Register</h2>
+        <form method="POST">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required placeholder="Choose a username">
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required placeholder="Choose a password">
+
+            <button type="submit" class="primary">Register</button>
+        </form>
+    </main>
 </body>
 
 </html>

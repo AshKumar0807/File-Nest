@@ -1,11 +1,12 @@
-from flask import Flask, request, redirect, url_for, render_template, jsonify, session , send_from_directory
+from flask import Flask, request, redirect, url_for, render_template, jsonify, session , send_from_directory , flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user, login_manager
 from werkzeug.utils import secure_filename
 import os
 import uuid
-from models import db, User, File, Share
+from models import db, User, Folder, File, Share
 from config import Config
+import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -27,7 +28,7 @@ def create_tables():
 
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return render_template('index.html')
 
 #user_Loader
 @login_manager.user_loader
@@ -73,32 +74,125 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('dashboard'))
+
+@app.route('/folder/create/<int:parent_folder_id>', methods=['GET', 'POST'])
+@login_required
+def create_folder(parent_folder_id=0):
+    #root_case
+    if parent_folder_id == 0:
+        parent_folder = None  #no_parent_folder_available
+    else:
+        parent_folder = Folder.query.get_or_404(parent_folder_id)
+        #user_perms
+        if parent_folder.user_id != current_user.id:
+            flash("You don't have permission to create a folder here.", 'danger')
+            return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        folder_name = request.form['folder_name']
+        new_folder = Folder(
+            name=folder_name,
+            parent_id=parent_folder.id if parent_folder else 0, 
+            user_id=current_user.id
+        )
+        db.session.add(new_folder)
+        db.session.commit()
+
+        flash("Folder created successfully!", 'success')
+        return redirect(url_for('view_folder', folder_id=new_folder.id))
+
+    return render_template('create_folder.html', parent_folder=parent_folder)
+
+#folder_View
+@app.route('/folder/view/<int:folder_id>', methods=['GET'])
+@login_required
+def view_folder(folder_id):
+    folder = Folder.query.get(folder_id)
+    
+    if not folder or folder.user_id != current_user.id:
+        flash("You don't have permission to view this folder.", 'danger')
+        return redirect(url_for('dashboard'))
+
+    return render_template('view_folder.html', folder=folder)
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    files = File.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', files=files)
+    folders = Folder.query.filter_by(user_id=current_user.id).all()
+    return render_template('dashboard.html', folders=folders)
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload/<int:folder_id>', methods=['POST'])
 @login_required
-def upload_file():
+def upload_file(folder_id):
+    folder = Folder.query.get(folder_id)
+
+    if not folder or folder.user_id != current_user.id:
+        flash("You don't have permission to upload files to this folder.", 'danger')
+        return redirect(url_for('dashboard'))
+
     if 'file' not in request.files:
         return 'No file part', 400
+    
     file = request.files['file']
     if file.filename == '':
         return 'No selected file', 400
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        user_folder = os.path.join(Config.NAS_DIRECTORY, current_user.username)
-        file_path = os.path.join(user_folder, filename)
+
+        #file_storage_path
+        folder_path = os.path.join(Config.NAS_DIRECTORY, current_user.username, str(folder.id))
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)  #create_folder_if_not_exists
+
+        file_path = os.path.join(folder_path, filename)
         file.save(file_path)
 
-        #file_metadata_save  
-        new_file = File(filename=filename, path=file_path, user_id=current_user.id, file_metadata={})
+        #file_Metadata
+        file_metadata = {
+            'size': os.path.getsize(file_path),
+            'filename': filename,
+            'type': file.content_type,
+            'upload_date': str(datetime.datetime.now())
+        }
+
+        #saving_file_to_database
+        new_file = File(
+            filename=filename,
+            path=file_path,
+            user_id=current_user.id,
+            folder_id=folder.id,  #file_folder_association
+            metadata=file_metadata
+        )
         db.session.add(new_file)
         db.session.commit()
 
+        flash("File uploaded successfully!", 'success')
+        return redirect(url_for('view_folder', folder_id=folder.id))
+
+    return 'Invalid file type', 400
+
+@app.route('/folder/delete/<int:folder_id>', methods=['POST'])
+@login_required
+def delete_folder(folder_id):
+    folder = Folder.query.get_or_404(folder_id)
+
+    #check_folder_owner
+    if folder.user_id != current_user.id:
+        flash("You don't have permission to delete this folder.", 'danger')
         return redirect(url_for('dashboard'))
+
+    #delete_folder
+    db.session.delete(folder)
+    db.session.commit()
+
+    flash("Folder deleted successfully!", 'success')
+    return redirect(url_for('dashboard')) 
 
 @app.route('/download/<int:file_id>')
 @login_required
