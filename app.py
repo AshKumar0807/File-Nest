@@ -7,10 +7,12 @@ import uuid
 from models import db, User, Folder, File, Share
 from config import Config
 import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
+CORS(app)
 
 db.init_app(app)
 login_manager = LoginManager()

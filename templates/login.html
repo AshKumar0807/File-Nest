@@ -4,22 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/picocss@1.6.5/dist/pico.min.css" rel="stylesheet">
+    <title>File Nest | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <main class="container">
-        <h2>Login</h2>
-        <form method="POST">
-            <label for="username">Username:</label>
-            <input type="text" name="username" required placeholder="Enter your username">
+<body class="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center">
+    <main class="w-full max-w-md bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 shadow-xl">
+        <div class="flex items-center justify-center space-x-2 mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12H9m0 0h.01M9 12v3m0-3v-3" />
+            </svg>
+            <h2 class="text-2xl font-bold">Login</h2>
+        </div>
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label for="username" class="block text-sm font-medium text-gray-200">Username</label>
+                <input type="text" name="username" id="username" required placeholder="Enter your username"
+                    class="w-full p-3 rounded-lg bg-gray-700/50 border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+            </div>
 
-            <label for="password">Password:</label>
-            <input type="password" name="password" required placeholder="Enter your password">
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
+                <input type="password" name="password" id="password" required placeholder="Enter your password"
+                    class="w-full p-3 rounded-lg bg-gray-700/50 border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" />
+            </div>
 
-            <button type="submit" class="primary">Login</button>
+            <button type="submit"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium p-3 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12H9m0 0h.01M9 12v3m0-3v-3" />
+                </svg>
+                <span>Login</span>
+            </button>
         </form>
+
+        <div class="mt-6 text-center text-sm text-gray-400">
+            <p>Don't have an account?
+                <a href="/register" class="text-blue-400 hover:text-blue-300">Sign up</a>
+            </p>
+        </div>
     </main>
 </body>
 
