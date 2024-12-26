@@ -1,25 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-black">
+    <div class="w-full max-w-md bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6">
+        <h1 class="text-3xl font-bold text-center">Create a New Folder
+            {% if parent_folder %} in "{{ parent_folder.name }}"{% else %}{% endif %}
+        </h1>
+        <form method="POST" class="space-y-4">
+            <div class="flex flex-col">
+                <label for="folder_name" class="text-lg font-medium">Folder Name:</label>
+                <input type="text" name="folder_name" id="folder_name" required
+                    class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="submit"
+                class="w-full py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
+                Create Folder
+            </button>
+        </form>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Folder</title>
-    <link href="https://cdn.jsdelivr.net/npm/picocss@1.6.5/dist/pico.min.css" rel="stylesheet">
-</head>
+        <div class="text-center">
+            {% if parent_folder %}
+            <a href="{{ url_for('view_folder', folder_id=parent_folder.id) }}"
+                class="text-blue-400 hover:text-blue-500 transition-colors">Back to Folder</a>
+            {% else %}
+            <a href="{{ url_for('dashboard') }}" class="text-blue-400 hover:text-blue-500 transition-colors">Back to
+                Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
-<body class="dark">
-    <h1>Create a New Folder{% if parent_folder %} in "{{ parent_folder.name }}"{% else %}{% endif %}</h1>
-    <form method="POST">
-        <label for="folder_name">Folder Name:</label>
-        <input type="text" name="folder_name" id="folder_name" required>
-        <button type="submit">Create Folder</button>
-    </form>
-    {% if parent_folder %}
-    <a href="{{ url_for('view_folder', folder_id=parent_folder.id) }}">Back to Folder</a>
-    {% else %}
-    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
-    {% endif %}
-</body>
-
-</html>
+{% endblock %}

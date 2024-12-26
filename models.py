@@ -30,8 +30,8 @@ class Folder(db.Model):
     name = db.Column(db.String(150), nullable=False)
     parent_id = db.Column(db.Integer, db.ForeignKey('folder.id'), nullable=True)  #self_reference_for_subfolders
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) 
-    files = db.relationship('File', backref='folder', lazy=True)
-    subfolders = db.relationship('Folder', backref=db.backref('parent_folder', remote_side=[id]), lazy=True)
+    files = db.relationship('File', backref='folder', lazy=True , cascade="all, delete-orphan")
+    subfolders = db.relationship('Folder', backref=db.backref('parent_folder', remote_side=[id]), lazy=True , cascade="all, delete-orphan")
 
     def _repr_(self):
         return f"<Folder {self.name} (User {self.user_id})>"
@@ -39,7 +39,7 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(150), nullable=False)
     path = db.Column(db.String(255), nullable=False)  
-    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'), nullable=False)
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id' , ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     file_metadata = db.Column(db.JSON)  
 

@@ -19,7 +19,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 #allowed_extensions
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mp4'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mp4', 'tsx', 'csv', 'xlsx', 'pptx', 'ppt', 'html', 'css', 'js', 'py', 'java', 'c', 'cpp', 'php', 'sql', 'json', 'xml', 'yaml', 'yml', 'md', 'log', 'sh', 'bat', 'ps1', 'psm1', 'psd1', 'ps1xml', 'pssc', 'reg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -75,6 +75,50 @@ def login():
             return 'Invalid credentials', 401
 
     return render_template('login.html')
+
+@app.route('/profile')
+@login_required
+def profile():
+    #all_Folders
+    folder_count = Folder.query.filter_by(user_id=current_user.id).count()
+    
+    #all_Files
+    files = File.query.filter_by(user_id=current_user.id).all()
+    file_count = len(files)
+    
+    #calculate_Total_storage
+    total_size = 0
+    for file in files:
+        try:
+            if file.path and os.path.exists(file.path):
+                total_size += os.path.getsize(file.path)
+        except (OSError, FileNotFoundError):
+            continue
+    
+    #file_types
+    file_types = {}
+    for file in files:
+        if file.file_metadata is not None:
+            file_type = file.file_metadata.get('type', 'unknown')
+            file_types[file_type] = file_types.get(file_type, 0) + 1
+    
+    #recent_files
+    recent_files = File.query.filter_by(user_id=current_user.id)\
+        .filter(File.file_metadata.isnot(None))\
+        .order_by(File.id.desc())\
+        .limit(5)\
+        .all()
+    
+    #storage_limit
+    storage_limit = 10 * 1024 * 1024 * 1024  #10GB
+    
+    return render_template('profile.html',
+                         folder_count=folder_count,
+                         file_count=file_count,
+                         total_size=total_size,
+                         storage_limit=storage_limit,
+                         file_types=file_types,
+                         recent_files=recent_files)
 
 @app.route('/logout')
 @login_required
@@ -182,7 +226,7 @@ def upload_file(folder_id):
 @app.route('/folder/delete/<int:folder_id>', methods=['POST'])
 @login_required
 def delete_folder(folder_id):
-    folder = Folder.query.get_or_404(folder_id)
+    folder = Folder.query.get(folder_id)
 
     #check_folder_owner
     if folder.user_id != current_user.id:
