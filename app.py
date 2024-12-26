@@ -5,10 +5,12 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 from models import db, User, Folder, File, Share
-from config import Config
+from config import Config , DevelopmentConfig , ProductionConfig
 import datetime
 from flask_cors import CORS
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
 app.config.from_object(Config)
 
