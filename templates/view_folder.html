@@ -30,7 +30,7 @@
         <input type="file" name="file" required
             class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
         <button type="submit"
-            class="w-full py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
+            class="px-5 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
             Upload
         </button>
     </form>
@@ -69,7 +69,7 @@
                 <a href="{{ url_for('download_file', file_id=file.id) }}"
                     class="text-blue-400 hover:text-blue-500 transition-colors">Preview</a>
                 {% elif file.filename.endswith('.mp4') or file.filename.endswith('.webm') %}
-                <video controls class="w-32 h-32">
+                <video controls class="w-32 h-32 object-cover rounded-md">
                     <source src="{{ url_for('download_file', file_id=file.id) }}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>

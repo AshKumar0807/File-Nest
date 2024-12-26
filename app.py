@@ -19,7 +19,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 #allowed_extensions
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mp4', 'tsx', 'csv', 'xlsx', 'pptx', 'ppt', 'html', 'css', 'js', 'py', 'java', 'c', 'cpp', 'php', 'sql', 'json', 'xml', 'yaml', 'yml', 'md', 'log', 'sh', 'bat', 'ps1', 'psm1', 'psd1', 'ps1xml', 'pssc', 'reg'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mp3' ,'mp4', 'tsx', 'csv', 'xlsx', 'pptx', 'ppt', 'html', 'css', 'js', 'py', 'java', 'c', 'cpp', 'php', 'sql', 'json', 'xml', 'yaml', 'yml', 'md', 'log', 'sh', 'bat', 'ps1', 'psm1', 'psd1', 'ps1xml', 'pssc', 'reg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -124,7 +124,7 @@ def profile():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('index'))
 
 @app.route('/folder/create/<int:parent_folder_id>', methods=['GET', 'POST'])
 @login_required
@@ -272,7 +272,7 @@ def share_file(file_id):
         return 'File not found', 404
 
     if request.method == 'GET':
-        #token_Generation
+        #generate_share_link
         token = str(uuid.uuid4())
         new_share = Share(file_id=file.id, token=token, user_id=current_user.id)
         db.session.add(new_share)
@@ -280,7 +280,7 @@ def share_file(file_id):
 
         shareable_link = url_for('shared_file', token=token, _external=True)
 
-        return jsonify({'token': token, 'link': shareable_link})
+        return render_template('share_file.html', link=shareable_link)
 
 @app.route('/shared/<token>')
 def shared_file(token):
