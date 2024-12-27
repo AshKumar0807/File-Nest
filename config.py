@@ -6,9 +6,3 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     NAS_DIRECTORY = 'upload'  # storage_path
     DEBUG = False  
-
-class DevelopmentConfig(Config):
-    DEBUG = True 
-
-class ProductionConfig(Config):
-    DEBUG = False 

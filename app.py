@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import uuid
 from models import db, User, Folder, File, Share
-from config import Config , DevelopmentConfig , ProductionConfig
+from config import Config 
 import datetime
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -21,7 +21,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 #allowed_extensions
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mp3' ,'mp4', 'tsx', 'csv', 'xlsx', 'pptx', 'ppt', 'html', 'css', 'js', 'py', 'java', 'c', 'cpp', 'php', 'sql', 'json', 'xml', 'yaml', 'yml', 'md', 'log', 'sh', 'bat', 'ps1', 'psm1', 'psd1', 'ps1xml', 'pssc', 'reg'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt', 'pdf', 'doc', 'docx', 'zip', 'mkv' ,'mp3' ,'mp4', 'tsx', 'csv', 'xlsx', 'pptx', 'ppt', 'html', 'css', 'js', 'py', 'java','apk','dmg', 'c', 'cpp', 'php', 'sql', 'json', 'xml', 'yaml', 'yml', 'md', 'log', 'sh', 'bat', 'ps1', 'psm1', 'psd1', 'ps1xml', 'pssc', 'reg'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -225,6 +225,12 @@ def upload_file(folder_id):
 
     return 'Invalid file type', 400
 
+@app.route('/files')
+@login_required
+def list_files():
+    files = File.query.filter_by(user_id=current_user.id).all()
+    return render_template('files.html', files=files)
+
 @app.route('/folder/delete/<int:folder_id>', methods=['POST'])
 @login_required
 def delete_folder(folder_id):
@@ -263,7 +269,18 @@ def delete_file(file_id):
         os.remove(file.path)
         db.session.delete(file)
         db.session.commit()
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('view_folder', folder_id=file.folder_id))
+    return 'File not found', 404
+
+@app.route('/delete_in_all_files/<int:file_id>')
+@login_required
+def delete_in_all_files(file_id):
+    file = File.query.get(file_id)
+    if file and file.user_id == current_user.id:
+        os.remove(file.path)
+        db.session.delete(file)
+        db.session.commit()
+        return redirect(url_for('list_files', folder_id=file.folder_id))
     return 'File not found', 404
 
 @app.route('/share/<int:file_id>', methods=['GET'])
