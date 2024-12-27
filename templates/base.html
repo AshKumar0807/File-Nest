@@ -10,56 +10,64 @@
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
-    <div class="flex h-screen">
-        <nav class="w-56 bg-gray-800/50 backdrop-blur-lg flex flex-col">
-            <div class="p-6">
-                <a href="/dashboard"
-                    class="text-2xl font-bold text-blue-500 hover:text-blue-400 transition-colors mb-6 block">
+    <div class="flex flex-col lg:flex-row h-screen">
+        <!-- Sidebar/Header -->
+        <nav class="lg:w-[168px] w-full bg-gray-800/50 backdrop-blur-lg flex flex-col lg:h-full sticky top-0 z-50">
+            <div class="p-4 flex items-center justify-between w-full">
+                <a href="/dashboard" class="text-2xl font-bold text-blue-500 hover:text-blue-400 transition-colors">
                     File Nest
                 </a>
-
-                <ul class="space-y-2">
-                    <li>
-                        <a href="/dashboard"
-                            class="flex items-center gap-2 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                            </svg>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/files"
-                            class="flex items-center gap-2 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H7l-2 4z" />
-                            </svg>
-                            <span>All Files</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/dashboard"
-                            class="flex items-center gap-2 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                </ul>
+                <!--Mobile_Nav-->
+                <div class="lg:hidden flex gap-6">
+                    <a href="/dashboard" class="text-gray-400 hover:text-white">Dash</a>
+                    <a href="/files" class="text-gray-400 hover:text-white">Files</a>
+                    <a href="/profile" class="text-gray-400 hover:text-white">Settings</a>
+                    <a href="/profile" class="text-gray-400 hover:text-white">Profile</a>
+                </div>
             </div>
 
-            <div class="mt-auto border-t border-gray-700">
-                <a href="/profile" class="block hover:bg-gray-700/50 transition-colors">
-                    <div class="p-4 flex items-center gap-3">
+            <!--Desktop_Nav-->
+            <ul class="hidden lg:flex flex-col p-4 space-y-2">
+                <li>
+                    <a href="/dashboard"
+                        class="flex items-center gap-1 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/files"
+                        class="flex items-center gap-1 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H7l-2 4z" />
+                        </svg>
+                        <span>All Files</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/profile"
+                        class="flex items-center gap-1 p-3 text-gray-400 hover:bg-gray-700/50 hover:text-white rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="hidden lg:block mt-auto border-t border-gray-700 p-5">
+                <a href="/profile" class="block hover:bg-gray-700/50 transition-colors rounded-lg">
+                    <div class="flex items-center gap-3">
                         {% if current_user.avatar_url %}
                         <img src="{{ current_user.avatar_url }}" alt="Profile" class="w-10 h-10 rounded-full">
                         {% else %}
@@ -79,7 +87,6 @@
             </div>
         </nav>
 
-        <!-- Main_Content -->
         <main class="flex-1 p-6 overflow-y-scroll">
             {% block content %}{% endblock %}
         </main>
