@@ -2,7 +2,7 @@
 {% block content %}
 <div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6">
-        <h1 class="text-3xl font-bold text-center">Create a New Folder
+        <h1 class="text-3xl font-bold text-center">Create Folder
             {% if parent_folder %} in "{{ parent_folder.name }}"{% else %}{% endif %}
         </h1>
         <form method="POST" class="space-y-4">
