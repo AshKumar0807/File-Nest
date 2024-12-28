@@ -240,19 +240,34 @@ def list_files():
 @app.route('/folder/delete/<int:folder_id>', methods=['POST'])
 @login_required
 def delete_folder(folder_id):
-    folder = Folder.query.get(folder_id)
+    try:
+        folder = Folder.query.get_or_404(folder_id)
+        
+        #check_owner
+        if folder.user_id != current_user.id:
+            return jsonify({
+                'error': "You don't have permission to delete this folder."
+            }), 403
+        
+        folder_name = folder.name
+        
+        db.session.delete(folder)
+        db.session.commit()
+        
+        #success_response
+        return jsonify({
+            'message': f'Folder "{folder_name}" deleted successfully',
+            'status': 'success'
+        }), 200
+        
+    except Exception as e:
+        app.logger.error(f"Error deleting folder {folder_id}: {str(e)}")
+        
+        db.session.rollback()
 
-    #check_folder_owner
-    if folder.user_id != current_user.id:
-        flash("You don't have permission to delete this folder.", 'danger')
-        return redirect(url_for('dashboard'))
-
-    #delete_folder
-    db.session.delete(folder)
-    db.session.commit()
-
-    flash("Folder deleted successfully!", 'success')
-    return redirect(url_for('dashboard')) 
+        return jsonify({
+            'error': 'An error occurred while deleting the folder'
+        }), 500
 
 @app.route('/download/<int:file_id>')
 @login_required
