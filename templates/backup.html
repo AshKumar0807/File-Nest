@@ -1,3 +1,4 @@
+//view_folder_ka_backup
 {% extends "base.html" %}
 {% block content %}
 
@@ -23,59 +24,57 @@
     </div>
 </div>
 
-<div class="flex flex-col lg:flex-row lg:space-x-6">
-    <!--Upload_File-->
-    <section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6 lg:w-1/2">
-        <h3 class="text-2xl font-semibold">Upload File</h3>
-        <p class="mt-4 text-sm text-gray-400">Only one file at a time.</p>
-        <form id="uploadForm" class="space-y-4">
-            <label for="fileInput" class="block text-sm font-medium text-gray-300"></label>
-            <input type="file" name="file" id="fileInput" required title="Choose file" placeholder="Choose file"
-                class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-            <button type="button" id="uploadButton"
-                class="px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
-                Upload
-            </button>
-            <div id="progressContainer" class="hidden">
-                <div class="relative w-full bg-gray-600 rounded-lg h-4">
-                    <div id="progressBar" class="absolute top-0 left-0 bg-blue-500 h-4 rounded-lg"></div>
-                </div>
-                <p id="progressText" class="text-sm text-white mt-2">0%</p>
+<!--File_Upload-->
+<section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6">
+    <h3 class="text-2xl font-semibold">Upload File</h3>
+    <p class="mt-4 text-sm text-gray-400">Only one file at a time.</p>
+    <form id="uploadForm" class="space-y-4">
+        <label for="fileInput" class="block text-sm font-medium text-gray-300"></label>
+        <input type="file" name="file" id="fileInput" required title="Choose file to upload" placeholder="Choose file"
+            class="""px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="button" id="uploadButton"
+            class="px-5 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
+            Upload
+        </button>
+        <div id="progressContainer" class="hidden">
+            <div class="relative w-full bg-gray-600 rounded-lg h-4">
+                <div id="progressBar" class="absolute top-0 left-0 bg-blue-500 h-4 rounded-lg"></div>
             </div>
-        </form>
-    </section>
+            <p id="progressText" class="text-sm text-white mt-2">0%</p>
+        </div>
+    </form>
+</section>
 
-    <!--Subfolders-->
-    <section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6 lg:w-1/2">
-        <h3 class="text-2xl font-semibold">Subfolders</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for subfolder in folder.subfolders %}
-            <div class="bg-gray-700/50 rounded-xl p-4 flex justify-between items-center">
-                <a href="{{ url_for('view_folder', folder_id=subfolder.id) }}"
-                    class="flex items-center space-x-2 text-lg hover:text-blue-400 transition-colors">
+<!--Subfolders-->
+<section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6">
+    <h3 class="text-2xl font-semibold">Subfolders</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for subfolder in folder.subfolders %}
+        <div class="bg-gray-700/50 rounded-xl p-4 flex justify-between items-center">
+            <a href="{{ url_for('view_folder', folder_id=subfolder.id) }}"
+                class="flex items-center space-x-2 text-lg hover:text-blue-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H7l-2 4z" />
+                </svg>
+                <span>{{ subfolder.name }}</span>
+            </a>
+            <form action="{{ url_for('delete_folder', folder_id=subfolder.id) }}" method="POST"
+                class="delete-folder-form">
+                <button type="submit" title="Delete Subfolder"
+                    class="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-500/10 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H7l-2 4z" />
+                            d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <span>{{ subfolder.name }}</span>
-                </a>
-                <form action="{{ url_for('delete_folder', folder_id=subfolder.id) }}" method="POST"
-                    class="delete-folder-form">
-                    <button type="submit" title="Delete Subfolder"
-                        class="p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-500/10 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-            {% endfor %}
+                </button>
+            </form>
         </div>
-    </section>
-</div>
+        {% endfor %}
+    </div>
+</section>
 
 <!--Files-->
 <section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6">

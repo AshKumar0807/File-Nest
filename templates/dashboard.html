@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="flex justify-between items-center mb-8">
-    <h1 class="hidden lg:flex font-bold items-center gap-2 text-3xl">
+<div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+    <h1 class="flex font-bold items-center gap-2 text-3xl">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
             class="w-8 h-8 text-blue-500">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -9,6 +9,7 @@
         </svg>
         All Folders
     </h1>
+    &#8201;
     <div class="flex space-x-4">
         <a href="{{ url_for('create_folder', parent_folder_id=0) }}"
             class="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors">
@@ -68,7 +69,7 @@
 </div>
 {% endif %}
 <div id="deleteToast"
-    class="fixed top-1 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform transition-transform duration-300 translate-x-full z-50">
+    class="fixed top-1 right-3 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform transition-transform duration-300 translate-x-full z-50">
     <div class="flex items-center justify-between mb-2">
         <span class="font-semibold">Delete Folder</span>
         <button onclick="closeToast()" class="text-gray-400 hover:text-gray-200" title="Close">
