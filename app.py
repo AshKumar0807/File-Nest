@@ -106,7 +106,6 @@ def profile():
     
     #recent_files
     recent_files = File.query.filter_by(user_id=current_user.id)\
-        .filter(File.file_metadata.isnot(None))\
         .order_by(File.id.desc())\
         .limit(5)\
         .all()

@@ -87,7 +87,7 @@
     </div>
 </div>
 
-<!-- File_Type_Distribution -->
+<!-- File_Type_Distribution
 <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 mb-6">
     <h2 class="text-xl font-bold mb-4">File Type Distribution</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -99,6 +99,7 @@
         {% endfor %}
     </div>
 </div>
+-->
 
 <!-- Recent_Uploads -->
 <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6">
@@ -114,12 +115,7 @@
                 </svg>
                 <div>
                     <h4 class="font-medium">{{ file.filename }}</h4>
-                    <p class="text-sm text-gray-400">{{ file.file_metadata.type }}</p>
                 </div>
-            </div>
-            <div class="text-right">
-                <p class="text-sm text-gray-400">{{ file.file_metadata.size|filesizeformat }}</p>
-                <p class="text-sm text-gray-500">{{ file.file_metadata.upload_date }}</p>
             </div>
         </div>
         {% endfor %}
