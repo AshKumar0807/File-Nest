@@ -131,18 +131,21 @@ def logout():
 @app.route('/folder/create/<int:parent_folder_id>', methods=['GET', 'POST'])
 @login_required
 def create_folder(parent_folder_id=0):
-    #root_case
     if parent_folder_id == 0:
-        parent_folder = None  #no_parent_folder_available
+        parent_folder = None
     else:
         parent_folder = Folder.query.get_or_404(parent_folder_id)
-        #user_perms
         if parent_folder.user_id != current_user.id:
             flash("You don't have permission to create a folder here.", 'danger')
             return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
         folder_name = request.form['folder_name']
+        
+        existing_folder = Folder.query.filter_by(name=folder_name, parent_id=parent_folder.id if parent_folder else 0, user_id=current_user.id).first()
+        if existing_folder:
+            return jsonify({"error": "A folder with this name already exists"}), 400
+
         new_folder = Folder(
             name=folder_name,
             parent_id=parent_folder.id if parent_folder else 0, 
@@ -151,12 +154,10 @@ def create_folder(parent_folder_id=0):
         db.session.add(new_folder)
         db.session.commit()
 
-        flash("Folder created successfully!", 'success')
-        return redirect(url_for('view_folder', folder_id=new_folder.id))
+        return jsonify({"success": True, "redirect": url_for('view_folder', folder_id=new_folder.id)})
 
     return render_template('create_folder.html', parent_folder=parent_folder)
 
-#folder_View
 @app.route('/folder/view/<int:folder_id>', methods=['GET'])
 @login_required
 def view_folder(folder_id):
@@ -180,28 +181,35 @@ def upload_file(folder_id):
     folder = Folder.query.get(folder_id)
 
     if not folder or folder.user_id != current_user.id:
-        flash("You don't have permission to upload files to this folder.", 'danger')
-        return redirect(url_for('dashboard'))
+        return jsonify({"error": "Permission denied"}), 403
 
     if 'file' not in request.files:
-        return 'No file part', 400
+        return jsonify({"error": "No file part"}), 400
     
     file = request.files['file']
     if file.filename == '':
-        return 'No selected file', 400
+        return jsonify({"error": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
+        
+        #folder_already_exists
+        existing_file = File.query.filter_by(
+            filename=filename,
+            folder_id=folder.id,
+            user_id=current_user.id
+        ).first()
+        
+        if existing_file:
+            return jsonify({"error": "File already exists"}), 409  
 
-        #file_storage_path
         folder_path = os.path.join(Config.NAS_DIRECTORY, current_user.username, str(folder.id))
         if not os.path.exists(folder_path):
-            os.makedirs(folder_path)  #create_folder_if_not_exists
+            os.makedirs(folder_path)
 
         file_path = os.path.join(folder_path, filename)
         file.save(file_path)
 
-        #file_Metadata
         file_metadata = {
             'size': os.path.getsize(file_path),
             'filename': filename,
@@ -209,21 +217,19 @@ def upload_file(folder_id):
             'upload_date': str(datetime.datetime.now())
         }
 
-        #saving_file_to_database
         new_file = File(
             filename=filename,
             path=file_path,
             user_id=current_user.id,
-            folder_id=folder.id,  #file_folder_association
+            folder_id=folder.id,
             metadata=file_metadata
         )
         db.session.add(new_file)
         db.session.commit()
 
-        flash("File uploaded successfully!", 'success')
-        return redirect(url_for('view_folder', folder_id=folder.id))
+        return jsonify({"message": "File uploaded successfully"}), 200
 
-    return 'Invalid file type', 400
+    return jsonify({"error": "Invalid file type"}), 400
 
 @app.route('/files')
 @login_required

@@ -28,8 +28,9 @@
     <h3 class="text-2xl font-semibold">Upload File</h3>
     <p class="mt-4 text-sm text-gray-400">Only one file at a time.</p>
     <form id="uploadForm" class="space-y-4">
-        <input type="file" name="file" id="fileInput" required
-            class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label for="fileInput" class="block text-sm font-medium text-gray-300"></label>
+        <input type="file" name="file" id="fileInput" required title="""Choose file to upload"
+            class="""px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
         <button type="button" id="uploadButton"
             class="px-5 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
             Upload
@@ -106,11 +107,12 @@
 </div>
 <div id="toast"
     class="fixed top-8 right-[520px] bg-green-600 text-white py-2 px-4 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
-    File uploaded successfully!
 </div>
 <div id="toast2"
     class="fixed top-8 right-[520px] bg-red-600 text-white py-2 px-4 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
-    Error uploading file!
+</div>
+<div id="toast3"
+    class="fixed top-8 right-[520px] bg-red-600 text-white py-2 px-4 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
 </div>
 {% endblock %}
 {% block scripts %}
@@ -120,6 +122,9 @@
         const progressContainer = document.getElementById("progressContainer");
         const progressBar = document.getElementById("progressBar");
         const progressText = document.getElementById("progressText");
+        const toast = document.getElementById('toast');
+        const toast2 = document.getElementById('toast2');
+        const toast3 = document.getElementById('toast3');
 
         if (!fileInput.files.length) {
             alert("Please select a file to upload.");
@@ -142,8 +147,9 @@
         });
 
         xhr.onload = function () {
+            const response = JSON.parse(xhr.responseText);
+
             if (xhr.status === 200) {
-                const toast = document.getElementById('toast');
                 toast.textContent = "File uploaded successfully!";
                 toast.classList.remove('opacity-0');
                 toast.classList.add('opacity-100');
@@ -153,22 +159,42 @@
                     toast.classList.add('opacity-0');
                     location.reload();
                 }, 1500);
+            } else if (xhr.status === 409) {
+                toast3.textContent = "File already exists!";
+                toast3.classList.remove('opacity-0');
+                toast3.classList.add('opacity-100');
+
+                setTimeout(() => {
+                    toast3.classList.remove('opacity-100');
+                    toast3.classList.add('opacity-0');
+                    progressContainer.classList.add("hidden");
+                    progressBar.style.width = "0%";
+                    progressText.textContent = "0%";
+                }, 1500);
             } else {
-                const toast2 = document.getElementById('toast2');
-                toast2.textContent = "Error uploading file!";
+                toast2.textContent = response.error || "Error uploading file!";
                 toast2.classList.remove('opacity-0');
                 toast2.classList.add('opacity-100');
 
                 setTimeout(() => {
-                    toast.classList.remove('opacity-100');
-                    toast.classList.add('opacity-0');
-                    location.reload();//auto_refresh
+                    toast2.classList.remove('opacity-100');
+                    toast2.classList.add('opacity-0');
+                    progressContainer.classList.add("hidden");
+                    progressBar.style.width = "0%";
+                    progressText.textContent = "0%";
                 }, 1500);
             }
         };
 
         xhr.onerror = function () {
-            alert("Upload failed. Please try again.");
+            toast2.textContent = "Upload failed. Please try again.";
+            toast2.classList.remove('opacity-0');
+            toast2.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast2.classList.remove('opacity-100');
+                toast2.classList.add('opacity-0');
+            }, 1500);
         };
 
         progressContainer.classList.remove("hidden");

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-black">
+<div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6">
         <h1 class="text-3xl font-bold text-center">Create a New Folder
             {% if parent_folder %} in "{{ parent_folder.name }}"{% else %}{% endif %}
@@ -11,7 +11,7 @@
                 <input type="text" name="folder_name" id="folder_name" required
                     class="px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-            <button type="submit"
+            <button type="submit" id="createFolderButton"
                 class="w-full py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors">
                 Create Folder
             </button>
@@ -28,5 +28,53 @@
         </div>
     </div>
 </div>
+<div id="toast"
+    class="fixed top-8 right-[520px] bg-red-600 text-white py-2 px-4 rounded-md opacity-0 transition-opacity duration-300 pointer-events-none">
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const toast = document.getElementById('toast');
 
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json().then(data => ({ status: response.status, data })))
+                .then(({ status, data }) => {
+                    if (status === 400) {
+                        toast.textContent = data.error;
+                        toast.classList.remove('opacity-0');
+                        toast.classList.add('opacity-100');
+
+                        setTimeout(() => {
+                            toast.classList.remove('opacity-100')
+                            toast.classList.add('opacity-0');
+                        }, 1500);
+                    } else {
+                        //Redirect
+                        window.location.href = data.redirect;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    toast.textContent = "An error occurred. Please try again.";
+                    toast.classList.remove('opacity-0');
+                    toast.classList.add('opacity-100');
+
+                    setTimeout(() => {
+                        toast.classList.remove('opacity-100');
+                        toast.classList.add('opacity-0');
+                    }, 1500);
+                });
+        });
+    });
+</script>
 {% endblock %}
