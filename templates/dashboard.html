@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="flex justify-between items-center mb-8 text-2xl">
-    <h1 class="hidden lg:flex font-bold items-center gap-2">
+<div class="flex justify-between items-center mb-8">
+    <h1 class="hidden lg:flex font-bold items-center gap-2 text-3xl">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
             class="w-8 h-8 text-blue-500">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H7l-2 4z" />
+                d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
         </svg>
-        Your Folders
+        All Folders
     </h1>
     <div class="flex space-x-4">
         <a href="{{ url_for('create_folder', parent_folder_id=0) }}"
