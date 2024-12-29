@@ -39,6 +39,10 @@ def index():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.route('/rd')
+def rd():
+    return render_template('redirect.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -47,8 +51,8 @@ def register():
 
         #if_user_already_exists
         if User.query.filter_by(username=username).first():
-            return 'User already exists!', 400
-
+            #return 'User already exists!', 400
+            return redirect(url_for('rd'))
         #create_a_new_user
         new_user = User(username=username, password=password)
         db.session.add(new_user)
