@@ -24,7 +24,6 @@
 </div>
 
 <div class="flex flex-col lg:flex-row lg:space-x-6">
-    <!--Upload_File-->
     <section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6 lg:w-1/2">
         <h3 class="text-2xl font-semibold">Upload File</h3>
         <p class="mt-4 text-sm text-gray-400">Only one file at a time.</p>
@@ -77,13 +76,12 @@
     </section>
 </div>
 
-<!--Files-->
 <section class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 space-y-6 mb-6">
     <h3 class="text-2xl font-semibold">Files</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for file in folder.files %}
         <div class="relative flex flex-col justify-between p-4 bg-gray-700 rounded-lg h-64">
-            <span class="text-white">{{ file.filename }}</span>
+            <span class="text-white text-center">{{ file.filename }}</span>
             <div class="flex justify-center items-center">
                 {% if file.filename.endswith('.jpg') or file.filename.endswith('.jpeg') or
                 file.filename.endswith('.png') or file.filename.endswith('.gif') %}
