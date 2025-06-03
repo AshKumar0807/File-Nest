@@ -1,6 +1,5 @@
 alembic==1.13.3
 bcrypt==4.2.1
-beautifulsoup4==4.12.3
 blinker==1.7.0
 capstone==6.0.0a2
 certifi==2024.8.30
