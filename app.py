@@ -51,7 +51,7 @@ def register():
 
         #if_user_already_exists
         if User.query.filter_by(username=username).first():
-            #return 'User already exists!', 400
+            #'User already exists!', 400
             return redirect(url_for('rd'))
         #create_a_new_user
         new_user = User(username=username, password=password)

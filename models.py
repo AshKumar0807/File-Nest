@@ -8,7 +8,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(150), nullable=False)
     folders = db.relationship('Folder', backref='owner', lazy=True)
     files = db.relationship('File', backref='owner', lazy=True)
-
+    shares = db.relationship('Share', backref='owner', lazy=True)
+    profile_picture = db.Column(db.String(150), nullable=True, default='default.jpg') 
+    subscription_type = db.Column(db.String(50), nullable=True, default='free_tier')
     def __repr__(self):
         return f"<User {self.username}>"
 
@@ -23,7 +25,17 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return str(self.id)
+class subscription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    plan_name = db.Column(db.String(50), nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='active') 
 
+    def __repr__(self):
+        return f"<Subscription {self.plan_name} for User {self.user_id}>"
+    
 class Folder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
