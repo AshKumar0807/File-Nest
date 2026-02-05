@@ -8,9 +8,9 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(150), nullable=False)
     folders = db.relationship('Folder', backref='owner', lazy=True)
     files = db.relationship('File', backref='owner', lazy=True)
-    shares = db.relationship('Share', backref='owner', lazy=True)
-    profile_picture = db.Column(db.String(150), nullable=True, default='default.jpg') 
-    subscription_type = db.Column(db.String(50), nullable=True, default='free_tier')
+    # shares = db.relationship('Share', backref='owner', lazy=True)
+    # profile_picture = db.Column(db.String(150), nullable=True, default='default.jpg') 
+    # subscription_type = db.Column(db.String(50), nullable=True, default='free_tier')
     def __repr__(self):
         return f"<User {self.username}>"
 
